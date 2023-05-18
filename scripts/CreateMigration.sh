@@ -1,0 +1,1 @@
+dotnet ef migrations add "$1" --project ../src/Pricord.Infrastructure --startup-project ../src/Pricord.Api
