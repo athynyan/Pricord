@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pricord.Api.BattleRecords.Contracts;
 using Pricord.Api.BattleRecords.Mappers;
+using Pricord.Application.BattleRecords.Queries.GetAllBattleRecords;
 using Pricord.Application.BattleRecords.Queries.GetBattleRecord;
 using Pricord.Domain.BattleRecords.ValueObjects;
 
@@ -32,5 +33,12 @@ public sealed class BattleRecordsController : ControllerBase
     {
         var result = await _sender.Send(new GetBattleRecordDetailsQuery(BattleRecordId.Create(id)));
         return Ok(result.ToResponse());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _sender.Send(new GetAllBattleRecordsQuery());
+        return Ok(result.Select(r => r.ToResponse()));
     }
 }

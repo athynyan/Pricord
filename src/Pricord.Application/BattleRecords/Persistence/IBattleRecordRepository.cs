@@ -9,4 +9,5 @@ public interface IBattleRecordRepository
     Task<BattleRecordDetailsResult?> GetBattleRecordDetails(BattleRecordId id);
 
     Task AddAsync(BattleRecord record);
+    Task<IEnumerable<BattleRecordResult>> GetAllAsync();
 }

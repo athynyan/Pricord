@@ -20,11 +20,13 @@ internal static class BattleRecordMapper
     {
         return new CreateBattleRecordResponse(
             record.Id.Value,
+            record.ExpectedDamage.Value,
+            record.ExpectedDamage.BattleType.ToString(),
             record.BossId.Value,
-            record.TimelineId?.Value,
             record.PlayableCharacterIds
                 .Select(p => p.Value)
-                .ToArray());
+                .ToArray(),
+            record.TimelineId?.Value);
     }
 
     public static BattleRecordDetailsResponse ToResponse(this BattleRecordDetailsResult record)
