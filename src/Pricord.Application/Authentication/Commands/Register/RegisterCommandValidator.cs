@@ -26,7 +26,7 @@ public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand
             .WithMessage("Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character.");
 
         RuleFor(c => c.Role)
-            .IsEnumName(typeof(Role))
+            .Must(role => Enum.TryParse<Role>(role, true, out _))
             .WithMessage("Provided role is invalid.");
     }
 }

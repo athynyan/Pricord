@@ -2,6 +2,10 @@
 @using Pricord.Web.Data
 @inject WeatherForecastService ForecastService
 
+@using Pricord.Web.Authentication
+@using Pricord.Web.Authentication.Contracts
+@inject IAuthenticationService AuthenticationService
+
 <PageTitle>Weather forecast</PageTitle>
 
 <h1>Weather forecast</h1>
@@ -37,11 +41,28 @@ else
     </table>
 }
 
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>@user.Id</p>
+    <p>@user.Name</p>
+    <p>@user.Email</p>
+    <p>@user.Role</p>
+    <p>@user.CreatedAt</p>
+    <p>@user.LastModified</p>
+}
+
 @code {
     private WeatherForecast[]? forecasts;
+    private UserDto? user;
 
     protected override async Task OnInitializedAsync()
     {
+        user = await AuthenticationService.AuthenticateAsync("testest", "!stringW12345");
+
         forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
     }
 }
