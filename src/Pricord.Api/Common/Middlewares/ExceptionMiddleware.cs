@@ -1,5 +1,3 @@
-using System.Net;
-using System.Text.Json;
 using FluentValidation;
 using Pricord.Api.Common.Handlers.Exceptions;
 using Pricord.Application.Authentication.Exceptions;

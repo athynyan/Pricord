@@ -1,7 +1,6 @@
 using Pricord.Api.Common.Middlewares;
 using Pricord.Application;
 using Pricord.Infrastructure;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 {

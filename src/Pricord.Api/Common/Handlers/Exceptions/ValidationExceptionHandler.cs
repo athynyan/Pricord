@@ -11,9 +11,9 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
         httpContext.Response.ContentType = "application/json+problem";
         httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
 
-        var e = (ValidationException)exception;
+        var validationException = (ValidationException) exception;
 
-        var errors = e.Errors.Select(e => 
+        var errors = validationException.Errors.Select(e => 
             new { Property = e.PropertyName.Split(".")[0], Message = e.ErrorMessage });
         
         var problemDetails = new

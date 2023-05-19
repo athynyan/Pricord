@@ -5,7 +5,7 @@ namespace Pricord.Api.Common.Handlers.Exceptions;
 
 public sealed class DefaultExceptionHandler : IExceptionHandler
 {
-    public async Task HandleAsync(HttpContext httpContext, Exception exception)
+    public Task HandleAsync(HttpContext httpContext, Exception exception)
     {
         httpContext.Response.ContentType = "application/json+problem";
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -21,6 +21,6 @@ public sealed class DefaultExceptionHandler : IExceptionHandler
 
         var result = JsonSerializer.Serialize(problemDetails);
 
-        await httpContext.Response.WriteAsync(result);
+        return httpContext.Response.WriteAsync(result);
     }
 }
