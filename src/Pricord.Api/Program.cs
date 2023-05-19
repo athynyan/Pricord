@@ -30,9 +30,15 @@ var app = builder.Build();
         app.UseSwaggerUI();
     }
 
+    app.UseCors(
+        o => o.WithOrigins(builder.Configuration.GetSection("FrontendUrl").Value!)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+
     app.UseMiddleware<ExceptionMiddleware>();
 
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
 
     app.UseAuthorization();
 
