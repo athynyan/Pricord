@@ -44,7 +44,8 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(databaseSettings.ConnectionString));
 
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<UserRepository>();
+        services.AddScoped<IUserRepository, CachedUserRepository>();
 
         services.AddScoped<BattleRecordRepository>();
         services.AddScoped<IBattleRecordRepository, CachedBattleRecordRepository>();
@@ -52,9 +53,11 @@ public static class DependencyInjection
         services.AddScoped<TimelineRepository>();
         services.AddScoped<ITimelineRepository, CachedTimelineRepository>();
 
-        services.AddScoped<IBossRepository, BossRepository>();
+        services.AddScoped<BossRepository>();
+        services.AddScoped<IBossRepository, CachedBossRepository>();
 
-        services.AddScoped<IUnitRepository, UnitRepository>();
+        services.AddScoped<UnitRepository>();
+        services.AddScoped<IUnitRepository, CachedUnitRepository>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 

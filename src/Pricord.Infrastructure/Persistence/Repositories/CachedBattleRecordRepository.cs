@@ -13,6 +13,7 @@ internal sealed class CachedBattleRecordRepository : IBattleRecordRepository
     private readonly IMemoryCache _cache;
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly string _key = "BattleRecords_";
+    private readonly int _expirationMinutes = 5;
 
     public CachedBattleRecordRepository(
         BattleRecordRepository repository,
@@ -34,7 +35,7 @@ internal sealed class CachedBattleRecordRepository : IBattleRecordRepository
 
         return await _cache.GetOrCreateAsync(_key, async entry =>
         {
-            entry.AbsoluteExpiration = _dateTimeProvider.UtcNow.AddMinutes(5);
+            entry.AbsoluteExpiration = _dateTimeProvider.UtcNow.AddMinutes(_expirationMinutes);
             return await _repository.GetAllAsync();
         }) ?? Enumerable.Empty<BattleRecordResult>();
     }
@@ -43,7 +44,7 @@ internal sealed class CachedBattleRecordRepository : IBattleRecordRepository
     {
         return await _cache.GetOrCreateAsync(_key + id, async entry =>
         {
-            entry.AbsoluteExpiration = _dateTimeProvider.UtcNow.AddMinutes(5);
+            entry.AbsoluteExpiration = _dateTimeProvider.UtcNow.AddMinutes(_expirationMinutes);
             return await _repository.GetBattleRecordDetails(id);
         });
     }
