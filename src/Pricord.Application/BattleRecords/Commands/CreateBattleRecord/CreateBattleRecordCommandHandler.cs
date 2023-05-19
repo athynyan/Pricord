@@ -3,7 +3,7 @@ using Pricord.Application.BattleRecords.Contracts;
 using Pricord.Application.BattleRecords.Contracts.Dtos;
 using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Application.Common.Persistence;
-using Pricord.Application.Timelines.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts;
 using Pricord.Application.Timelines.Persistence;
 using Pricord.Domain.BattleRecords;
 using Pricord.Domain.BattleRecords.Enums;
@@ -102,7 +102,7 @@ public sealed class CreateBattleRecordCommandHandler : IRequestHandler<CreateBat
         );
     }
 
-    private Timeline? CreateTimeline(TimelineDto? timelineDto)
+    private Timeline? CreateTimeline(CreateTimelineDto? timelineDto)
     {   
         if (timelineDto is null) return null;
 

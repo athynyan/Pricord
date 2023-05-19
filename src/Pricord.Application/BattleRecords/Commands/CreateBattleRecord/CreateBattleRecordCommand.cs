@@ -1,7 +1,7 @@
 using MediatR;
 using Pricord.Application.BattleRecords.Contracts;
 using Pricord.Application.BattleRecords.Contracts.Dtos;
-using Pricord.Application.Timelines.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts;
 
 namespace Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
 
@@ -10,5 +10,5 @@ public sealed record CreateBattleRecordCommand(
     PlayableCharacterDto[] PlayableCharacters,
     long ExpectedDamage,
     string BattleType,
-    TimelineDto? Timeline
+    CreateTimelineDto? Timeline
 ) : IRequest<BattleRecordResult>;

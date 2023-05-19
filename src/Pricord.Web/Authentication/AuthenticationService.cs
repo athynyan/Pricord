@@ -10,7 +10,6 @@ public sealed class AuthenticationService : IAuthenticationService
     public AuthenticationService(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("http://localhost:5180/");
     }
 
     public async Task<UserDto?> AuthenticateAsync(string username, string password)

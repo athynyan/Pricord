@@ -1,13 +1,13 @@
 using FluentValidation;
 using FluentValidation.Validators;
 using Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
-using Pricord.Application.Timelines.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts;
 using Pricord.Domain.Timelines.Enums;
 using Pricord.Domain.Units.ValueObjects;
 
 namespace Pricord.Application.Timelines.Validators;
 
-internal class TimelineDtoValidator : IPropertyValidator<CreateBattleRecordCommand, TimelineDto>
+internal class TimelineDtoValidator : IPropertyValidator<CreateBattleRecordCommand, CreateTimelineDto>
 {
     private string _errorMessage = string.Empty;
     private readonly IEnumerable<PrefabId> _playableCharacterPrefabIds = default!;
@@ -24,7 +24,7 @@ internal class TimelineDtoValidator : IPropertyValidator<CreateBattleRecordComma
         return _errorMessage;
     }
 
-    public bool IsValid(ValidationContext<CreateBattleRecordCommand> context, TimelineDto value)
+    public bool IsValid(ValidationContext<CreateBattleRecordCommand> context, CreateTimelineDto value)
     {
         var timelineDto = context.InstanceToValidate.Timeline!;
         
