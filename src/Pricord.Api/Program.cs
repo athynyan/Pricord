@@ -31,7 +31,7 @@ var app = builder.Build();
     }
 
     app.UseCors(
-        o => o.WithOrigins(builder.Configuration.GetSection("FrontendUrl").Value!)
+        o => o.WithOrigins(builder.Configuration["FrontendUrl"]!)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials());
@@ -40,6 +40,7 @@ var app = builder.Build();
 
     // app.UseHttpsRedirection();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

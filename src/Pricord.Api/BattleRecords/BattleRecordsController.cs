@@ -21,7 +21,7 @@ public sealed class BattleRecordsController : ControllerBase
     }
 
     [HttpPost]
-    // [Authorize]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody]CreateBattleRecordRequest request)
     {
         var result = await _sender.Send(request.ToCommand());
