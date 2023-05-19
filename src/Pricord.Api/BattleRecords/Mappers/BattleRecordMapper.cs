@@ -1,4 +1,5 @@
 using Pricord.Api.BattleRecords.Contracts;
+using Pricord.Api.Timelines.Mappers;
 using Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
 using Pricord.Application.BattleRecords.Contracts;
 

@@ -1,6 +1,7 @@
 using FluentValidation;
 using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Application.BattleRecords.Validators;
+using Pricord.Application.Timelines.Validators;
 using Pricord.Domain.BattleRecords.Enums;
 using Pricord.Domain.Units.ValueObjects;
 

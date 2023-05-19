@@ -3,6 +3,8 @@ using Pricord.Application.BattleRecords.Contracts;
 using Pricord.Application.BattleRecords.Contracts.Dtos;
 using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Application.Common.Persistence;
+using Pricord.Application.Timelines.Contracts.Dtos;
+using Pricord.Application.Timelines.Persistence;
 using Pricord.Domain.BattleRecords;
 using Pricord.Domain.BattleRecords.Enums;
 using Pricord.Domain.BattleRecords.ValueObjects;

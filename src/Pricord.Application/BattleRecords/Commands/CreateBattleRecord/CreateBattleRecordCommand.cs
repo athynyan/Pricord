@@ -1,6 +1,7 @@
 using MediatR;
 using Pricord.Application.BattleRecords.Contracts;
 using Pricord.Application.BattleRecords.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts.Dtos;
 
 namespace Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
 

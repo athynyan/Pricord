@@ -1,17 +1,17 @@
-using Pricord.Application.BattleRecords.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts.Dtos;
 using Pricord.Domain.Timelines;
 using Pricord.Domain.Timelines.Enums;
 using Pricord.Domain.Timelines.ValueObjects;
 using Pricord.Domain.Units.ValueObjects;
 
-namespace Pricord.Api.BattleRecords.Mappers;
+namespace Pricord.Api.Timelines.Mappers;
 
 internal static class TimelineMapper
 {
-    public static Timeline ToEntity(this TimelineDto dto)
+    public static Timeline ToEntity(this TimelineDto result)
     {   
-        var items = dto.Items.Select(p => p.ToEntity()).ToArray();
-        var video = dto.Video?.ToValueObject();
+        var items = result.Items.Select(p => p.ToEntity()).ToArray();
+        var video = result.Video?.ToValueObject();
         
         if (video is null)
         {
@@ -24,6 +24,7 @@ internal static class TimelineMapper
     public static TimelineDto ToDto(this Timeline timeline)
     {
         return new TimelineDto(
+            timeline.Id.Value,
             timeline.Items.Select(p => p.ToDto()).ToArray(),
             timeline.Video?.ToDto());
     }

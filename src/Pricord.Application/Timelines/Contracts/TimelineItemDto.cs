@@ -1,4 +1,4 @@
-namespace Pricord.Application.BattleRecords.Contracts.Dtos;
+namespace Pricord.Application.Timelines.Contracts.Dtos;
 
 public sealed record TimelineItemDto(
     int Time,

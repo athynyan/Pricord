@@ -15,7 +15,8 @@ public sealed class DefaultExceptionHandler : IExceptionHandler
             Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
             Title = "An error occurred while processing your request.",
             Status = httpContext.Response.StatusCode,
-            Instance = httpContext.Request.Path
+            Instance = httpContext.Request.Path,
+            Detail = exception.Message
         };
 
         var result = JsonSerializer.Serialize(problemDetails);

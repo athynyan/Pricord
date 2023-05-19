@@ -1,4 +1,5 @@
 using Pricord.Application.BattleRecords.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts.Dtos;
 
 namespace Pricord.Api.BattleRecords.Contracts;
 

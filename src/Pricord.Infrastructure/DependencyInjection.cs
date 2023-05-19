@@ -7,6 +7,7 @@ using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Application.Common.Persistence;
 using Pricord.Application.Common.Services;
 using Pricord.Application.Common.Settings;
+using Pricord.Application.Timelines.Persistence;
 using Pricord.Infrastructure.Persistence;
 using Pricord.Infrastructure.Persistence.Repositories;
 using Pricord.Infrastructure.Services;
@@ -45,7 +46,8 @@ public static class DependencyInjection
         services.AddScoped<BattleRecordRepository>();
         services.AddScoped<IBattleRecordRepository, CachedBattleRecordRepository>();
 
-        services.AddScoped<ITimelineRepository, TimelineRepository>();
+        services.AddScoped<TimelineRepository>();
+        services.AddScoped<ITimelineRepository, CachedTimelineRepository>();
 
         services.AddScoped<IBossRepository, BossRepository>();
 

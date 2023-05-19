@@ -1,11 +1,11 @@
 using FluentValidation;
 using FluentValidation.Validators;
 using Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
-using Pricord.Application.BattleRecords.Contracts.Dtos;
+using Pricord.Application.Timelines.Contracts.Dtos;
 using Pricord.Domain.Timelines.Enums;
 using Pricord.Domain.Units.ValueObjects;
 
-namespace Pricord.Application.BattleRecords.Validators;
+namespace Pricord.Application.Timelines.Validators;
 
 internal class TimelineDtoValidator : IPropertyValidator<CreateBattleRecordCommand, TimelineDto>
 {
