@@ -41,7 +41,7 @@ public sealed class CreateBattleRecordCommandValidator : AbstractValidator<Creat
                 .SetValidator(new PlayableCharacterDtoValidator(ValueMustExist)));
         
         RuleFor(br => br.Timeline)
-            .SetValidator(new TimelineDtoValidator(unitRepository)!)
+            .SetValidator(new TimelineDtoValidator(_playableCharacterPrefabIds)!)
             .When(br => br.Timeline is not null);
     }
 

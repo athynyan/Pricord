@@ -2,7 +2,6 @@ using FluentValidation;
 using FluentValidation.Validators;
 using Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
 using Pricord.Application.BattleRecords.Contracts.Dtos;
-using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Domain.Timelines.Enums;
 using Pricord.Domain.Units.ValueObjects;
 
@@ -11,11 +10,11 @@ namespace Pricord.Application.BattleRecords.Validators;
 internal class TimelineDtoValidator : IPropertyValidator<CreateBattleRecordCommand, TimelineDto>
 {
     private string _errorMessage = string.Empty;
-    private readonly IUnitRepository _unitRepository = default!;
+    private readonly IEnumerable<PrefabId> _playableCharacterPrefabIds = default!;
 
-    public TimelineDtoValidator(IUnitRepository unitRepository)
+    public TimelineDtoValidator(IEnumerable<PrefabId> playableCharacterPrefabIds)
     {
-        _unitRepository = unitRepository;
+        _playableCharacterPrefabIds = playableCharacterPrefabIds;
     }
 
     public string Name => "TimelineDtoValidator";
@@ -66,10 +65,10 @@ internal class TimelineDtoValidator : IPropertyValidator<CreateBattleRecordComma
                 _errorMessage = "Timeline item action type must be one of the following: " + string.Join(", ", Enum.GetNames<ActionType>());
                 return false;
             }
-            
-            if (!_unitRepository.ExistsAsync(PrefabId.Create(item.AttackerId)).Result)
+
+            if (!_playableCharacterPrefabIds.Contains(PrefabId.Create(item.AttackerId)))
             {
-                _errorMessage = "Timeline item attacker must exist.";
+                _errorMessage = "Timeline item attacker id must be one of the following: " + string.Join(", ", _playableCharacterPrefabIds.Select(pc => pc.Value));
                 return false;
             }
         }

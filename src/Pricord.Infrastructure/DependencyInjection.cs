@@ -16,7 +16,9 @@ namespace Pricord.Infrastructure;
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
-	{
+	{   
+        services.AddMemoryCache();
+
         services
             .AddPersistence(configuration)
             .AddJwtAuthentication(configuration);
@@ -39,10 +41,16 @@ public static class DependencyInjection
             options.UseNpgsql(databaseSettings.ConnectionString));
 
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IBattleRecordRepository, BattleRecordRepository>();
+
+        services.AddScoped<BattleRecordRepository>();
+        services.AddScoped<IBattleRecordRepository, CachedBattleRecordRepository>();
+
         services.AddScoped<ITimelineRepository, TimelineRepository>();
+
         services.AddScoped<IBossRepository, BossRepository>();
+
         services.AddScoped<IUnitRepository, UnitRepository>();
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
