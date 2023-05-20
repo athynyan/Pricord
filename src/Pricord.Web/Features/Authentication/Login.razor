@@ -5,6 +5,9 @@
 @using Pricord.Web.Features.Authentication.Services
 @inject IAuthenticationService AuthenticationService
 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
 <PageTitle>Login</PageTitle>
 
 <h1>Login</h1>
@@ -45,10 +48,15 @@
     private async Task LoginAsync()
     {
         isLoading = true;
-        user = await AuthenticationService.AuthenticateAsync(username, password);
-        if (user != null)
+        var authenticationResult = await AuthenticationService.AuthenticateAsync(username, password);
+        if (authenticationResult is not null)
         {
             isLogged = true;
+            user = authenticationResult.User;
+            ((JwtAuthenticationStateProvider) AuthenticationStateProvider)
+                .NotifyUserAuthentication(authenticationResult.AccessToken);
+
+            NavigationManager.NavigateTo("/");
         }
         isLoading = false;
     }
