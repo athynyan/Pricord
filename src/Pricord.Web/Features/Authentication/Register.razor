@@ -1,0 +1,46 @@
+@page "/register"
+
+@inject NavigationManager NavigationManager
+
+@using Pricord.Web.Features.Authentication.Services
+@inject IAuthenticationService AuthenticationService
+
+<PageTitle>Register</PageTitle>
+
+<h1>Register</h1>
+
+<form>
+    <label for="username">Username</label>
+    <input type="text" id="username" @bind-value="username" />
+    <label for="password">Password</label>
+    <input type="password" id="password" @bind-value="password" />
+    <label for="password">Confirm Password</label>
+    <input type="password" id="password" @bind-value="confirmPassword" />
+    <label for="email">Email</label>
+    <input type="email" id="email" @bind-value="email" />
+    <button type="button" @onclick="RegisterAsync">Register</button>
+</form>
+
+@code
+{
+    private string? username;
+    private string? email;
+    private string? password;
+    private string? confirmPassword;
+
+
+    private async Task RegisterAsync()
+    {
+        if (username is null || password is null || confirmPassword is null)
+        {
+            return;
+        }
+
+        var isLogged = await AuthenticationService.RegisterAsync(username, password, confirmPassword, email);
+
+        if (isLogged)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

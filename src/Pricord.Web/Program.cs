@@ -1,16 +1,24 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Pricord.Web.Authentication;
-using Pricord.Web.Data;
+using MudBlazor.Services;
+using Pricord.Web.Features.Authentication.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 // Add services to the container.
 builder.Services
-    .AddHttpClient("Pricord.Api", client => client.BaseAddress = new Uri("http://localhost:5180/"));
+    .AddHttpClient("Pricord.Api", client => client.BaseAddress = new Uri(builder.Configuration["BackendUrl"]!));
 
-builder.Services.AddSingleton<HttpClient>(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Pricord.Api"));
+builder.Services.AddMudServices();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -31,9 +39,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-// builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.Configuration["BackendUrl"]!) });
 builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>();
-builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
 
@@ -44,6 +50,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSerilogRequestLogging();
 
 // app.UseHttpsRedirection();
 

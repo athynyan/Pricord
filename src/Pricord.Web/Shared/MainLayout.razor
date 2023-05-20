@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>Pricord.Web</PageTitle>
+<PageTitle>Pricord</PageTitle>
 
 <div class="page">
     <div class="sidebar">
@@ -9,7 +9,12 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
+                Login
+            </NavLink>
+            <NavLink class="nav-link" href="Register" Match="NavLinkMatch.All">
+                Register
+            </NavLink>
         </div>
 
         <article class="content px-4">

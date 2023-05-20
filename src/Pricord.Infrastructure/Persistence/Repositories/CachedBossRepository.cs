@@ -10,7 +10,7 @@ internal sealed class CachedBossRepository : IBossRepository
     private readonly BossRepository _repository;
     private readonly IMemoryCache _cache;
     private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly string _key = "Boss_";
+    //private readonly string _key = "Boss_";
 
     public CachedBossRepository(
         BossRepository repository,
