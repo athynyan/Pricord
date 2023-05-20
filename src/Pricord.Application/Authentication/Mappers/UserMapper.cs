@@ -1,9 +1,9 @@
-using Pricord.Application.Api.Contracts.Dtos;
+using Pricord.Application.Authentication.Contracts;
 using Pricord.Domain.Authentication;
 
-namespace Pricord.Api.Authentication.Mappers;
+namespace Pricord.Application.Authentication.Mappers;
 
-internal static class UserDtoMapper
+internal static class UserMapper
 {
     internal static UserDto ToDto(this User user) 
         => new UserDto(user.Id.Value,

@@ -1,4 +1,4 @@
-namespace Pricord.Application.Api.Contracts.Dtos;
+namespace Pricord.Application.Authentication.Contracts;
 
 public sealed record UserDto(
 	Guid Id,

@@ -1,6 +1,7 @@
 using MediatR;
 using Pricord.Application.Authentication.Contracts;
 using Pricord.Application.Authentication.Exceptions;
+using Pricord.Application.Authentication.Mappers;
 using Pricord.Application.Authentication.Persistence;
 using Pricord.Application.Common.Persistence;
 using Pricord.Application.Common.Services;
@@ -56,6 +57,6 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Au
         return new AuthenticationResult(
             accessToken,
             refreshToken.Value,
-            createdUser);
+            createdUser.ToDto());
     }
 }

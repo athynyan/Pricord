@@ -1,4 +1,4 @@
-using Pricord.Application.Api.Contracts.Dtos;
+using Pricord.Application.Authentication.Contracts;
 
 namespace Pricord.Api.Authentication.Contracts;
 
