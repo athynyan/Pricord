@@ -30,7 +30,7 @@ internal sealed class JwtService : IJwtService
 		var claims = new[]
 		{
 			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-			new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+			new Claim(JwtRegisteredClaimNames.Sub, user.Id.Value.ToString()),
 			new Claim(JwtRegisteredClaimNames.Name, user.Name.Value),
 			new Claim(ClaimTypes.Role, user.Role.ToString())
 		};

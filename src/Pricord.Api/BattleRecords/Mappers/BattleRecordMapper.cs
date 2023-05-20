@@ -17,9 +17,9 @@ internal static class BattleRecordMapper
             request.Timeline);
     }
 
-    public static CreateBattleRecordResponse ToResponse(this BattleRecordResult record)
+    public static BattleRecordResponse ToResponse(this BattleRecordResult record)
     {
-        return new CreateBattleRecordResponse(
+        return new BattleRecordResponse(
             record.Id.Value,
             record.ExpectedDamage.Value,
             record.ExpectedDamage.BattleType.ToString(),

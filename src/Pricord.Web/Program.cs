@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
 using Pricord.Web.Features.Authentication.Services;
+using Pricord.Web.Features.BattleRecords.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddOptions();
 builder.Services.AddAuthenticationCore();
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IBattleRecordService, BattleRecordService>();
 builder.Services.AddScoped<AuthenticationStateProvider, JwtAuthenticationStateProvider>();
 
 var app = builder.Build();

@@ -1,5 +1,57 @@
 @page "/battlerecords"
 
+@using Pricord.Web.Features.BattleRecords.Contracts
+@using Pricord.Web.Features.BattleRecords.Services
+@inject IBattleRecordService BattleRecordService
+
 <PageTitle>Battle Records</PageTitle>
 
 <h1>Battle Records</h1>
+
+@if (_battleRecords.Count() > 0)
+{
+    foreach (var battleRecord in _battleRecords)
+    {
+        // make a table
+        <table>
+            <thead>
+                <tr style="">
+                    <td scope="col">ID</td>
+                    <td scope="col">Boss ID</td>
+                    <td scope="col">Expected Damage</td>
+                    <td scope="col">BattleType</td>
+                    <td scope="col">Timeline ID</td>
+                    <td scope="col">Playable Character IDs</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@battleRecord.Id</td>
+                    <td>@battleRecord.BossId</td>
+                    <td>@battleRecord.ExpectedDamage</td>
+                    <td>@battleRecord.BattleType</td>
+                    <td>@battleRecord.TimelineId</td>
+                    <td>
+                        @foreach (var playableCharacterId in battleRecord.PlayableCharacterIds)
+                        {
+                            @playableCharacterId <br />
+                        }
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p>No battle records found.</p>
+}
+
+@code {
+    private IEnumerable<BattleRecordResponse> _battleRecords { get; set; } = new List<BattleRecordResponse>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _battleRecords = await BattleRecordService.GetAllAsync();
+    }
+}

@@ -50,6 +50,14 @@ public sealed class AuthenticationService : IAuthenticationService
         return authenticationResult;
     }
 
+    public async Task LogoutAsync()
+    {
+        await Task.WhenAll(
+            _localStorageService.DeleteAsync("refresh_token").AsTask(),
+            _sessionStorageService.DeleteAsync("access_token").AsTask(),
+            _sessionStorageService.DeleteAsync("user").AsTask());
+    }
+
     public async Task<bool> RegisterAsync(string username, string password, string ConfirmPassword, string? email)
     {
         if (password != ConfirmPassword)
@@ -57,9 +65,12 @@ public sealed class AuthenticationService : IAuthenticationService
         
         var request = new RegisterRequest(username, password, email);
 
-        var result = await _httpClient.PostAsJsonAsync(AuthenticationEndpoints.RegisterEndpoint, request);
+        var response = await _httpClient.PostAsJsonAsync(AuthenticationEndpoints.RegisterEndpoint, request);
         
-        return result.IsSuccessStatusCode;
+        var authenticationResult = await response.Content.ReadFromJsonAsync<AuthenticationResult>();
+        await SaveAuthenticationResult(authenticationResult);
+
+        return response.IsSuccessStatusCode;
     }
 
     private async Task SaveAuthenticationResult(AuthenticationResult? authenticationResult)

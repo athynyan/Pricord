@@ -1,6 +1,6 @@
 namespace Pricord.Api.BattleRecords.Contracts;
 
-public sealed record CreateBattleRecordResponse(
+public sealed record BattleRecordResponse(
     Guid Id,
     long ExpectedDamage,
     string BattleType,

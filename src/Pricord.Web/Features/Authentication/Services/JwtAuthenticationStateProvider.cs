@@ -26,6 +26,13 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 
     public async override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
+        var accessToken = await _sessionStorage.GetAsync<string>("access_token");
+    
+        if (!string.IsNullOrWhiteSpace(accessToken.Value))
+        {
+            return await AuthenticateUser(accessToken.Value);
+        }
+
         var token = await _localStorage.GetAsync<string>("refresh_token");
 
         if (string.IsNullOrWhiteSpace(token.Value))
@@ -41,31 +48,7 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
             return new AuthenticationState(_anonymous);
         }
 
-        var claims = ParseClaimsFromJwt(authenticationResult.AccessToken);
-
-        if (claims is null)
-        {
-            await _localStorage.DeleteAsync("refresh_token");
-            return new AuthenticationState(_anonymous);
-        }
-
-        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-        
-        return new AuthenticationState(user);
-    }
-
-    private IEnumerable<Claim> ParseClaimsFromJwt(string value)
-    {
-        try
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.ReadJwtToken(value);
-            return token.Claims;
-        }
-        catch (Exception)
-        {
-            return Enumerable.Empty<Claim>();
-        }
+        return await AuthenticateUser(authenticationResult.AccessToken);
     }
 
     public void NotifyUserAuthentication(string token)
@@ -79,5 +62,34 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
     {
         var authState = Task.FromResult(new AuthenticationState(_anonymous));
         NotifyAuthenticationStateChanged(authState);
+    }
+
+    private async Task<AuthenticationState> AuthenticateUser(string accessToken)
+    {
+        var claims = ParseClaimsFromJwt(accessToken);
+
+        if (claims is null)
+        {
+            await _sessionStorage.DeleteAsync("access_token");
+            return new AuthenticationState(_anonymous);
+        }
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
+        return new AuthenticationState(user);
+    }
+
+    private IEnumerable<Claim> ParseClaimsFromJwt(string value)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(value);
+
+            return token.Claims;
+        }
+        catch (Exception)
+        {
+            return Enumerable.Empty<Claim>();
+        }
     }
 }
