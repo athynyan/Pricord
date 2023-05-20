@@ -12,7 +12,7 @@ internal sealed class CachedUserRepository : IUserRepository
     private readonly UserRepository _userRepository;
     private readonly IMemoryCache _cache;
     private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly string _key = "Unit_";
+    private readonly string _key = "User_";
     private readonly int _expirationMinutes = 5;
 
     public CachedUserRepository(
@@ -54,6 +54,15 @@ internal sealed class CachedUserRepository : IUserRepository
         {
             entry.AbsoluteExpiration = _dateTimeProvider.UtcNow.AddMinutes(_expirationMinutes);
             return await _userRepository.FindByNameAsync(name);
+        });
+    }
+
+    public Task<User?> FindByRefreshToken(string refreshToken)
+    {
+        return _cache.GetOrCreateAsync(_key + refreshToken, async entry =>
+        {
+            entry.AbsoluteExpiration = _dateTimeProvider.UtcNow.AddMinutes(_expirationMinutes);
+            return await _userRepository.FindByRefreshToken(refreshToken);
         });
     }
 }

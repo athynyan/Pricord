@@ -1,7 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Pricord.Api.Authentication.Contracts;
 using Pricord.Api.Authentication.Mappers;
-using Pricord.Application.Api.Contracts;
+using Pricord.Application.Authentication.Queries.Refresh;
 using Pricord.Application.Common.Constants;
 
 namespace Pricord.Api.Authentication;
@@ -16,7 +17,7 @@ public sealed class AuthenticationController : ControllerBase
         _sender = sender;
     }
 
-    [HttpPost(AuthenticationEndpoints.RegisterEndpoint)] // http://localhost:port/register
+    [HttpPost(AuthenticationEndpoints.RegisterEndpoint)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var result = await _sender.Send(request.ToCommand());
@@ -27,6 +28,13 @@ public sealed class AuthenticationController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var result = await _sender.Send(request.ToQuery());
+        return Ok(result.ToResponse());
+    }
+
+    [HttpPost(AuthenticationEndpoints.RefreshEndpoint)]
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+    {
+        var result = await _sender.Send(new RefreshTokenQuery(request.RefreshToken));
         return Ok(result.ToResponse());
     }
 }

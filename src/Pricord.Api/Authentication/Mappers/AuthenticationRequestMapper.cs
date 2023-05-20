@@ -1,4 +1,4 @@
-using Pricord.Application.Api.Contracts;
+using Pricord.Api.Authentication.Contracts;
 using Pricord.Application.Authentication.Commands.Register;
 using Pricord.Application.Authentication.Queries.Login;
 using Pricord.Domain.Authentication.Enums;

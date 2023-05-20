@@ -40,9 +40,9 @@ public sealed class User : AggregateRoot<UserId, Guid>
         _tokens.Add(token);
     }
 
-    public void RemoveToken(Token token)
+    public void RemoveToken(string token)
     {
-        _tokens.Remove(token);
+        _tokens.RemoveWhere(t => t.Value == token);
     }
 
     public void ClearTokens()

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Pricord.Application.Api.Contracts;
+namespace Pricord.Api.Authentication.Contracts;
 
 public sealed record RegisterRequest(
     [Required] string Name,

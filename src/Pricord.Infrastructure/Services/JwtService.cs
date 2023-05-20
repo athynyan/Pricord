@@ -53,7 +53,7 @@ internal sealed class JwtService : IJwtService
 
         return Token.Create(
             Convert.ToBase64String(randomNumber), 
-            _dateTimeProvider.UtcNow.AddMinutes(_jwtSettings.RefreshExpiryDays));
+            _dateTimeProvider.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays));
     }
 
     public bool ValidateRefreshToken(string tokenString, Token token)

@@ -9,6 +9,7 @@ public interface IUserRepository
     Task<User?> FindByIdAsync(UserId id);
     Task<User?> FindByEmailAsync(Email email);
     Task<User?> FindByNameAsync(Name name);
+    Task<User?> FindByRefreshToken(string refreshToken);
 
     Task AddAsync(User user);
 }

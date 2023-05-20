@@ -5,11 +5,11 @@ namespace Pricord.Domain.Authentication;
 
 public sealed class Token : Entity<TokenId, Guid>
 {
-    public string Value { get; init; }
-    public DateTime Expiry { get; init; }
+    public string Value { get; private set; }
+    public DateTime Expiry { get; private set; }
 
-    public UserId UserId { get; init; } = null!;
-    public User User { get; init; } = null!;
+    public UserId UserId { get; private set; } = null!;
+    public User User { get; private set; } = null!;
 
     private Token(string value, DateTime expiry) : base(TokenId.Create())
     {
@@ -20,5 +20,10 @@ public sealed class Token : Entity<TokenId, Guid>
     public static Token Create(string value, DateTime expiry)
     {
         return new Token(value, expiry);
+    }
+
+    public void UpdateExpiration(DateTime dateTime)
+    {
+        Expiry = dateTime;
     }
 }
