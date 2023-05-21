@@ -8,23 +8,22 @@
 
 <h1>Battle Records</h1>
 
-@if (_battleRecords.Count() > 0)
+@if (_battleRecords.Count() > 0 && !isLoading)
 {
-    foreach (var battleRecord in _battleRecords)
-    {
-        // make a table
-        <table>
-            <thead>
-                <tr style="">
-                    <td scope="col">ID</td>
-                    <td scope="col">Boss ID</td>
-                    <td scope="col">Expected Damage</td>
-                    <td scope="col">BattleType</td>
-                    <td scope="col">Timeline ID</td>
-                    <td scope="col">Playable Character IDs</td>
-                </tr>
-            </thead>
-            <tbody>
+    <table>
+        <thead>
+            <tr style="">
+                <td scope="col">ID</td>
+                <td scope="col">Boss ID</td>
+                <td scope="col">Expected Damage</td>
+                <td scope="col">BattleType</td>
+                <td scope="col">Timeline ID</td>
+                <td scope="col">Playable Character IDs</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var battleRecord in _battleRecords)
+            {
                 <tr>
                     <td>@battleRecord.Id</td>
                     <td>@battleRecord.BossId</td>
@@ -38,9 +37,13 @@
                         }
                     </td>
                 </tr>
-            </tbody>
-        </table>
-    }
+            }           
+        </tbody>
+    </table>
+}
+else if (isLoading)
+{
+    <p>Loading...</p>
 }
 else
 {
@@ -49,9 +52,11 @@ else
 
 @code {
     private IEnumerable<BattleRecordResponse> _battleRecords { get; set; } = new List<BattleRecordResponse>();
-
+    private bool isLoading { get; set; } = false;
     protected override async Task OnInitializedAsync()
     {
+        isLoading = true;
         _battleRecords = await BattleRecordService.GetAllAsync();
+        isLoading = false;
     }
 }
