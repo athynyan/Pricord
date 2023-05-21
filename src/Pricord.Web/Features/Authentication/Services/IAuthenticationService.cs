@@ -6,9 +6,9 @@ public interface IAuthenticationService
 {
     Task<AuthenticationResponse?> AuthenticateAsync(string username, string password);
     Task<AuthenticationResponse?> AuthenticateWithRefreshToken(string refreshToken);
-    Task TryAuthenticateWithRefreshTokenAsync();
     Task<bool> RegisterAsync(string username, string password, string ConfirmPassword, string? email);
 
+    Task TryAuthenticateWithRefreshTokenAsync();
     Task LogoutAsync();
 }
 

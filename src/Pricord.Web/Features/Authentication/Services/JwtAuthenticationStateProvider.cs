@@ -56,16 +56,9 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string value)
     {
-        try
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.ReadJwtToken(value);
-            
-            return token.Claims;
-        }
-        catch (Exception)
-        {
-            return Enumerable.Empty<Claim>();
-        }
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.ReadJwtToken(value);
+        
+        return token.Claims;
     }
 }
