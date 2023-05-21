@@ -16,8 +16,8 @@
         <AuthorizeView>
             <Authorized>
                 <div class="top-row px-4">
-                    <span class="nav-link">@context.User.Claims.FirstOrDefault(c => c.Type == "name")?.Value</span>
-                    <span class="nav-link" @onclick="LogoutAsync">Logout</span>
+                    <span class="nav-link">@context.User.Identity!.Name</span>
+                    <span class="nav-link logout" @onclick="LogoutAsync">Logout</span>
                 </div>
             </Authorized>
             <NotAuthorized>
@@ -38,10 +38,23 @@
     </main>
 </div>
 
+<style scoped>
+    .logout {
+        cursor: pointer;
+    }
+</style>
+
 @code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthenticationService.TryAuthenticateWithRefreshTokenAsync();
+    }
+
     private async Task LogoutAsync()
     {
         await AuthenticationService.LogoutAsync();
         ((JwtAuthenticationStateProvider)AuthenticationStateProvider).NotifyUserLogout();
     }
 }
+

@@ -8,52 +8,42 @@ namespace Pricord.Web.Features.Authentication.Services;
 public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 {
     private readonly ProtectedSessionStorage _sessionStorage;
-    private readonly ProtectedLocalStorage _localStorage;
-    private readonly IAuthenticationService _authenticationService;
-
     private readonly ClaimsPrincipal _anonymous;
 
     public JwtAuthenticationStateProvider(
         ProtectedSessionStorage sessionStorage,
-        ProtectedLocalStorage localStorage,
-        IAuthenticationService authenticationService)
+        ProtectedLocalStorage localStorage)
     {
         _sessionStorage = sessionStorage;
-        _localStorage = localStorage;
-        _authenticationService = authenticationService;
         _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
     }
 
     public async override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var accessToken = await _sessionStorage.GetAsync<string>("access_token");
-    
-        if (!string.IsNullOrWhiteSpace(accessToken.Value))
-        {
-            return await AuthenticateUser(accessToken.Value);
-        }
 
-        var token = await _localStorage.GetAsync<string>("refresh_token");
-
-        if (string.IsNullOrWhiteSpace(token.Value))
+        if (string.IsNullOrWhiteSpace(accessToken.Value))
         {
             return new AuthenticationState(_anonymous);
         }
 
-        var authenticationResult = _authenticationService.AuthenticateWithRefreshToken(token.Value).Result;
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            ParseClaimsFromJwt(accessToken.Value),
+            "jwt",
+            ClaimTypes.Name,
+            ClaimTypes.Role));
 
-        if (authenticationResult is null)
-        {
-            await _localStorage.DeleteAsync("refresh_token");
-            return new AuthenticationState(_anonymous);
-        }
-
-        return await AuthenticateUser(authenticationResult.AccessToken);
+        return new AuthenticationState(user);
     }
 
     public void NotifyUserAuthentication(string token)
     {
-        var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt"));
+        var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(
+            ParseClaimsFromJwt(token),
+            "jwt",
+            ClaimTypes.Name,
+            ClaimTypes.Role));
+
         var authState = Task.FromResult(new AuthenticationState(authenticatedUser));
         NotifyAuthenticationStateChanged(authState);
     }
@@ -64,27 +54,13 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(authState);
     }
 
-    private async Task<AuthenticationState> AuthenticateUser(string accessToken)
-    {
-        var claims = ParseClaimsFromJwt(accessToken);
-
-        if (claims is null)
-        {
-            await _sessionStorage.DeleteAsync("access_token");
-            return new AuthenticationState(_anonymous);
-        }
-
-        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwt"));
-        return new AuthenticationState(user);
-    }
-
     private IEnumerable<Claim> ParseClaimsFromJwt(string value)
     {
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.ReadJwtToken(value);
-
+            
             return token.Claims;
         }
         catch (Exception)

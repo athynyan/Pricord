@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Pricord.Contracts.Authentication;
 using Pricord.Contracts.Common.Constants;
@@ -8,14 +9,20 @@ namespace Pricord.Web.Features.Authentication.Services;
 public sealed class AuthenticationService : IAuthenticationService
 {
     private readonly HttpClient _httpClient;
-    private readonly ProtectedLocalStorage _localStorageService;
-    private readonly ProtectedSessionStorage _sessionStorageService;
+    private readonly ProtectedLocalStorage _localStorage;
+    private readonly ProtectedSessionStorage _sessionStorage;
+    private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    public AuthenticationService(IHttpClientFactory httpClientFactory, ProtectedLocalStorage localStorageService, ProtectedSessionStorage sessionStorageService)
+    public AuthenticationService(
+        IHttpClientFactory httpClientFactory,
+        ProtectedLocalStorage localStorageService,
+        ProtectedSessionStorage sessionStorageService,
+        AuthenticationStateProvider authenticationStateProvider)
     {
         _httpClient = httpClientFactory.CreateClient("Pricord.Api");
-        _localStorageService = localStorageService;
-        _sessionStorageService = sessionStorageService;
+        _localStorage = localStorageService;
+        _sessionStorage = sessionStorageService;
+        _authenticationStateProvider = authenticationStateProvider;
     }
 
     public async Task<AuthenticationResponse?> AuthenticateAsync(string username, string password)
@@ -26,35 +33,38 @@ public sealed class AuthenticationService : IAuthenticationService
         if (result.StatusCode == HttpStatusCode.Unauthorized)
             return null;
         
-        var authenticationResult =  await result.Content.ReadFromJsonAsync<AuthenticationResponse>();
-        await SaveAuthenticationResult(authenticationResult);
+        var authenticationResponse =  await result.Content.ReadFromJsonAsync<AuthenticationResponse>();
+        await SaveAuthenticationResult(authenticationResponse);
 
-        Console.WriteLine((await _localStorageService.GetAsync<string>("access_token")).Value);
+        ((JwtAuthenticationStateProvider)_authenticationStateProvider)
+            .NotifyUserAuthentication(authenticationResponse!.AccessToken);
 
-        return authenticationResult;
+        return authenticationResponse;
     }
 
     public async Task<AuthenticationResponse?> AuthenticateWithRefreshToken(string refreshToken)
     {
         var request = new RefreshRequest(refreshToken);
+        var result = _httpClient.PostAsJsonAsync(AuthenticationEndpoints.RefreshEndpoint, request);
 
-        var response = _httpClient.PostAsJsonAsync(AuthenticationEndpoints.RefreshEndpoint, request);
-
-        if (response.Result.StatusCode == HttpStatusCode.Unauthorized)
+        if (result.Result.StatusCode == HttpStatusCode.Unauthorized)
             return null;
 
-        var authenticationResult = await response.Result.Content.ReadFromJsonAsync<AuthenticationResponse>();
-        await SaveAuthenticationResult(authenticationResult);
+        var authenticationResponse = await result.Result.Content.ReadFromJsonAsync<AuthenticationResponse>();
+        await SaveAuthenticationResult(authenticationResponse);
 
-        return authenticationResult;
+        ((JwtAuthenticationStateProvider)_authenticationStateProvider)
+            .NotifyUserAuthentication(authenticationResponse!.AccessToken);
+
+        return authenticationResponse;
     }
 
     public async Task LogoutAsync()
     {
         await Task.WhenAll(
-            _localStorageService.DeleteAsync("refresh_token").AsTask(),
-            _sessionStorageService.DeleteAsync("access_token").AsTask(),
-            _sessionStorageService.DeleteAsync("user").AsTask());
+            _localStorage.DeleteAsync("refresh_token").AsTask(),
+            _sessionStorage.DeleteAsync("access_token").AsTask(),
+            _sessionStorage.DeleteAsync("user").AsTask());
     }
 
     public async Task<bool> RegisterAsync(string username, string password, string ConfirmPassword, string? email)
@@ -69,14 +79,28 @@ public sealed class AuthenticationService : IAuthenticationService
         var authenticationResult = await response.Content.ReadFromJsonAsync<AuthenticationResponse>();
         await SaveAuthenticationResult(authenticationResult);
 
+        ((JwtAuthenticationStateProvider)_authenticationStateProvider)
+            .NotifyUserAuthentication(authenticationResult!.AccessToken);
+
         return response.IsSuccessStatusCode;
+    }
+
+    public async Task TryAuthenticateWithRefreshTokenAsync()
+    {
+        Console.WriteLine("Trying to authenticate with refresh token");
+
+        var refreshToken = await _localStorage.GetAsync<string>("refresh_token");
+        if (refreshToken.Value is null)
+            return;
+
+        await AuthenticateWithRefreshToken(refreshToken.Value);
     }
 
     private async Task SaveAuthenticationResult(AuthenticationResponse? authenticationResult)
     {
         await Task.WhenAll(
-            _localStorageService.SetAsync("refresh_token", authenticationResult!.RefreshToken).AsTask(),
-            _sessionStorageService.SetAsync("access_token", authenticationResult!.AccessToken).AsTask(),
-            _sessionStorageService.SetAsync("user", authenticationResult!.User).AsTask());
+            _localStorage.SetAsync("refresh_token", authenticationResult!.RefreshToken).AsTask(),
+            _sessionStorage.SetAsync("access_token", authenticationResult!.AccessToken).AsTask(),
+            _sessionStorage.SetAsync("user", authenticationResult!.User).AsTask());
     }
 }
