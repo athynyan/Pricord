@@ -1,4 +1,4 @@
-using Pricord.Web.Features.BattleRecords.Contracts;
+using Pricord.Contracts.BattleRecords;
 
 namespace Pricord.Web.Features.BattleRecords.Services;
 

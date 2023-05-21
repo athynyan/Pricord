@@ -1,5 +1,5 @@
+using Pricord.Contracts.BattleRecords;
 using Pricord.Contracts.Common.Constants;
-using Pricord.Web.Features.BattleRecords.Contracts;
 
 namespace Pricord.Web.Features.BattleRecords.Services;
 
