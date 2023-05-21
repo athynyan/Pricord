@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Pricord.Application.BattleRecords.Contracts;
+using Pricord.Application.BattleRecords.Models;
 using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Domain.BattleRecords;
 using Pricord.Domain.BattleRecords.ValueObjects;

@@ -1,11 +1,11 @@
-using Pricord.Application.Authentication.Contracts;
+using Pricord.Contracts.Authentication;
 
 namespace Pricord.Web.Features.Authentication.Services;
 
 public interface IAuthenticationService
 {
-    Task<AuthenticationResult?> AuthenticateAsync(string username, string password);
-    Task<AuthenticationResult?> AuthenticateWithRefreshToken(string refreshToken);
+    Task<AuthenticationResponse?> AuthenticateAsync(string username, string password);
+    Task<AuthenticationResponse?> AuthenticateWithRefreshToken(string refreshToken);
     Task<bool> RegisterAsync(string username, string password, string ConfirmPassword, string? email);
 
     Task LogoutAsync();

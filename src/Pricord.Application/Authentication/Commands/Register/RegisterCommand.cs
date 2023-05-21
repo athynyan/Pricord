@@ -1,5 +1,5 @@
 using MediatR;
-using Pricord.Application.Authentication.Contracts;
+using Pricord.Application.Authentication.Models;
 using Pricord.Domain.Authentication.ValueObjects;
 using Pricord.Domain.Common.ValueObjects;
 

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
-using Pricord.Application.BattleRecords.Contracts;
+using Pricord.Application.BattleRecords.Models;
 using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Application.Common.Services;
 using Pricord.Domain.BattleRecords;

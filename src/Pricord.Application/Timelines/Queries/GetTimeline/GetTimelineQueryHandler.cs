@@ -1,10 +1,10 @@
 using MediatR;
-using Pricord.Application.Timelines.Contracts.Dtos;
 using Pricord.Application.Timelines.Persistence;
+using Pricord.Domain.Timelines;
 
 namespace Pricord.Application.Timelines.Queries.GetTimeline;
 
-public sealed class GetTimelineQueryHandler : IRequestHandler<GetTimelineQuery, TimelineDto?>
+public sealed class GetTimelineQueryHandler : IRequestHandler<GetTimelineQuery, Timeline?>
 {
     private readonly ITimelineRepository _repository;
 
@@ -13,7 +13,7 @@ public sealed class GetTimelineQueryHandler : IRequestHandler<GetTimelineQuery, 
         _repository = repository;
     }
 
-    public async Task<TimelineDto?> Handle(GetTimelineQuery request, CancellationToken cancellationToken)
+    public async Task<Timeline?> Handle(GetTimelineQuery request, CancellationToken cancellationToken)
     {
         return await _repository.GetAsync(request.Id);
     }

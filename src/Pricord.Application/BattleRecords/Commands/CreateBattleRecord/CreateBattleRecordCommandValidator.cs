@@ -29,7 +29,7 @@ public sealed class CreateBattleRecordCommandValidator : AbstractValidator<Creat
             .Cascade(CascadeMode.Stop)
             .NotEmpty()
             .WithMessage("Boss must be specified.")
-            .SetValidator(new BossDtoValidator(ValueMustExist));
+            .SetValidator(new BossValidator(ValueMustExist));
         
         RuleFor(br => br.PlayableCharacters)
             .Cascade(CascadeMode.Stop)
@@ -39,10 +39,10 @@ public sealed class CreateBattleRecordCommandValidator : AbstractValidator<Creat
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Playable character must be specified.")
-                .SetValidator(new PlayableCharacterDtoValidator(ValueMustExist)));
+                .SetValidator(new PlayableCharacterValidator(ValueMustExist)));
         
         RuleFor(br => br.Timeline)
-            .SetValidator(new TimelineDtoValidator(_playableCharacterPrefabIds)!)
+            .SetValidator(new TimelineValidator(_playableCharacterPrefabIds)!)
             .When(br => br.Timeline is not null);
     }
 

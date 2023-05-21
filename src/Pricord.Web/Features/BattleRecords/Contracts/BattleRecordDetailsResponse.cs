@@ -1,5 +1,5 @@
-using Pricord.Application.BattleRecords.Contracts.Dtos;
-using Pricord.Application.Timelines.Contracts.Dtos;
+using Pricord.Contracts.BattleRecords;
+using Pricord.Contracts.Timelines;
 
 namespace Pricord.Web.Features.BattleRecords.Contracts;
 

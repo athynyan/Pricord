@@ -1,4 +1,4 @@
-using Pricord.Application.BattleRecords.Contracts.Dtos;
+using Pricord.Contracts.BattleRecords;
 using Pricord.Domain.Units;
 using Pricord.Domain.Units.Enums;
 using Pricord.Domain.Units.ValueObjects;

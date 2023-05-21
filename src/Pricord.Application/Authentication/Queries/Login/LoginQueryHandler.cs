@@ -1,8 +1,7 @@
 using System.Text.RegularExpressions;
 using MediatR;
-using Pricord.Application.Authentication.Contracts;
+using Pricord.Application.Authentication.Models;
 using Pricord.Application.Authentication.Exceptions;
-using Pricord.Application.Authentication.Mappers;
 using Pricord.Application.Authentication.Persistence;
 using Pricord.Application.Common.Persistence;
 using Pricord.Application.Common.Services;
@@ -59,7 +58,7 @@ internal sealed partial class LoginQueryHandler : IRequestHandler<LoginQuery, Au
         return new AuthenticationResult(
             accessToken,
             refreshToken.Value,
-            existingUser.ToDto());
+            existingUser);
     }
 
     [GeneratedRegex(@"/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/")]

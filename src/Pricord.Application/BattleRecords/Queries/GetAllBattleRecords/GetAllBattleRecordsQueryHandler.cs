@@ -1,5 +1,5 @@
 using MediatR;
-using Pricord.Application.BattleRecords.Contracts;
+using Pricord.Application.BattleRecords.Models;
 using Pricord.Application.BattleRecords.Persistence;
 
 namespace Pricord.Application.BattleRecords.Queries.GetAllBattleRecords;

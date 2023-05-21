@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
 using Pricord.Application.Common.Services;
-using Pricord.Application.Timelines.Contracts.Dtos;
 using Pricord.Application.Timelines.Persistence;
 using Pricord.Domain.Timelines;
 using Pricord.Domain.Timelines.ValueObjects;
@@ -29,7 +28,7 @@ internal sealed class CachedTimelineRepository : ITimelineRepository
         return _repository.AddAsync(timeline);
     }
 
-    public Task<TimelineDto?> GetAsync(TimelineId id)
+    public Task<Timeline?> GetAsync(TimelineId id)
     {
         return _cache.GetOrCreateAsync(_key + id, async entry =>
         {

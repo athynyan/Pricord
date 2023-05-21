@@ -1,5 +1,5 @@
 using MediatR;
-using Pricord.Application.Authentication.Contracts;
+using Pricord.Application.Authentication.Models;
 
 namespace Pricord.Application.Authentication.Queries.Refresh;
 

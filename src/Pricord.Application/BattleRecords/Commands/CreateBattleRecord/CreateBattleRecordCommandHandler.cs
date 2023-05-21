@@ -1,9 +1,8 @@
 using MediatR;
-using Pricord.Application.BattleRecords.Contracts;
-using Pricord.Application.BattleRecords.Contracts.Dtos;
+using Pricord.Application.BattleRecords.Models;
 using Pricord.Application.BattleRecords.Persistence;
 using Pricord.Application.Common.Persistence;
-using Pricord.Application.Timelines.Contracts;
+using Pricord.Application.Timelines.Models;
 using Pricord.Application.Timelines.Persistence;
 using Pricord.Domain.BattleRecords;
 using Pricord.Domain.BattleRecords.Enums;
@@ -11,8 +10,6 @@ using Pricord.Domain.BattleRecords.ValueObjects;
 using Pricord.Domain.Timelines;
 using Pricord.Domain.Timelines.Enums;
 using Pricord.Domain.Timelines.ValueObjects;
-using Pricord.Domain.Units;
-using Pricord.Domain.Units.Enums;
 using Pricord.Domain.Units.ValueObjects;
 
 namespace Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
@@ -42,15 +39,13 @@ public sealed class CreateBattleRecordCommandHandler : IRequestHandler<CreateBat
 
         var expectedDamage = Damage.Create(request.ExpectedDamage, Enum.Parse<BattleType>(request.BattleType, true));
 
-        var timeline = CreateTimeline(request.Timeline);
-        var boss = CreateBoss(request.Boss);
-        var playableCharacters = CreatePlayableCharacters(request.PlayableCharacters);
+        var timeline = CreateTimelineModel(request.Timeline);
 
         if (timeline is not null) 
         {
             battleRecord = BattleRecord.Create(
-                boss.Id,
-                playableCharacters,
+                request.Boss.Id,
+                request.PlayableCharacters,
                 expectedDamage,
                 timeline.Id);
 
@@ -59,14 +54,14 @@ public sealed class CreateBattleRecordCommandHandler : IRequestHandler<CreateBat
         else 
         {
             battleRecord = BattleRecord.Create(
-                boss.Id,
-                playableCharacters,
+                request.Boss.Id,
+                request.PlayableCharacters,
                 expectedDamage
                 );
         }
 
         await Task.WhenAll(
-            _bossRepository.AddAsync(boss),
+            _bossRepository.AddAsync(request.Boss),
             _battleRecordRepository.AddAsync(battleRecord));
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -81,32 +76,11 @@ public sealed class CreateBattleRecordCommandHandler : IRequestHandler<CreateBat
                 .ToArray());
     }
 
-    private PlayableCharacter[] CreatePlayableCharacters(PlayableCharacterDto[] playableCharacters)
+    private Timeline? CreateTimelineModel(CreateTimelineModel? timeline)
     {
-        return playableCharacters
-            .Select(pc => PlayableCharacter.Create(
-                PrefabId.Create(pc.PrefabId),
-                Level.Create(pc.Level),
-                Rank.Create(pc.Rank),
-                Rarity.Create(pc.Rarity)))
-            .ToArray();
-    }
+        if (timeline is null) return null;
 
-    private Boss CreateBoss(BossDto boss)
-    {
-        return Boss.Create(
-            PrefabId.Create(boss.PrefabId),
-            Level.Create(boss.Level),
-            Health.Create(boss.Health),
-            (Tier) boss.Tier
-        );
-    }
-
-    private Timeline? CreateTimeline(CreateTimelineDto? timelineDto)
-    {   
-        if (timelineDto is null) return null;
-
-        var items = timelineDto!.Items
+        var items = timeline!.Items
             .Select(i => TimelineItem.Create(
                 i.Time, 
                 PrefabId.Create(i.AttackerId), 
@@ -114,8 +88,8 @@ public sealed class CreateBattleRecordCommandHandler : IRequestHandler<CreateBat
                 i.AdditionalInfo))
             .ToArray();
 
-        var video = timelineDto!.Video is not null
-            ? Video.Create(timelineDto!.Video.Url, Enum.Parse<VideoType>(timelineDto!.Video.Type, true))
+        var video = timeline!.Video is not null
+            ? Video.Create(timeline!.Video.Url, Enum.Parse<VideoType>(timeline!.Video.Type, true))
             : null;
 
         return video is null 

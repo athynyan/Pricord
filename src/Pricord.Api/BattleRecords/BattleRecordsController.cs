@@ -1,11 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Pricord.Api.BattleRecords.Contracts;
 using Pricord.Api.BattleRecords.Mappers;
 using Pricord.Application.BattleRecords.Queries.GetAllBattleRecords;
 using Pricord.Application.BattleRecords.Queries.GetBattleRecord;
-using Pricord.Application.Common.Constants;
+using Pricord.Contracts.BattleRecords;
+using Pricord.Contracts.Common.Constants;
 using Pricord.Domain.BattleRecords.ValueObjects;
 
 namespace Pricord.Api.BattleRecords;

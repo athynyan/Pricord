@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Pricord.Application\Pricord.Application.csproj" />
     <ProjectReference Include="..\Pricord.Infrastructure\Pricord.Infrastructure.csproj" />
+    <ProjectReference Include="..\Pricord.Contracts\Pricord.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

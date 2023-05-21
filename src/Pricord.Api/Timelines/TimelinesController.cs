@@ -20,6 +20,6 @@ public sealed class TimelinesController : ControllerBase
     public async Task<IActionResult> GetTimeline([FromRoute] Guid id)
     {
         var result = await _sender.Send(new GetTimelineQuery(TimelineId.Create(id)));
-        return result is null ? NotFound() : Ok(result);
+        return result is null ? NotFound() : Ok(result.ToDto());
     }
 }

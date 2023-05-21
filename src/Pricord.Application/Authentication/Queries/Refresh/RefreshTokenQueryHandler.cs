@@ -1,8 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Options;
-using Pricord.Application.Authentication.Contracts;
+using Pricord.Application.Authentication.Models;
 using Pricord.Application.Authentication.Exceptions;
-using Pricord.Application.Authentication.Mappers;
 using Pricord.Application.Authentication.Persistence;
 using Pricord.Application.Common.Persistence;
 using Pricord.Application.Common.Services;
@@ -49,7 +48,7 @@ internal sealed class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQue
         return new AuthenticationResult(
             accessToken,
             request.RefreshToken,
-            user.ToDto());
+            user);
     }
 
 }

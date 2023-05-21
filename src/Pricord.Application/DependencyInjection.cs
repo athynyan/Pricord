@@ -29,6 +29,7 @@ public static class DependencyInjection
 
 		services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+		
 		return services;
 	}
 }

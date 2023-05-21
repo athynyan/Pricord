@@ -1,9 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Pricord.Api.Authentication.Contracts;
 using Pricord.Api.Authentication.Mappers;
 using Pricord.Application.Authentication.Queries.Refresh;
-using Pricord.Application.Common.Constants;
+using Pricord.Contracts.Authentication;
+using Pricord.Contracts.Common.Constants;
 
 namespace Pricord.Api.Authentication;
 

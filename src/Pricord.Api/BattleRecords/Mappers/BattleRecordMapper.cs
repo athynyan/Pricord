@@ -1,7 +1,7 @@
-using Pricord.Api.BattleRecords.Contracts;
-using Pricord.Api.Timelines.Mappers;
+using Pricord.Api.Timelines;
 using Pricord.Application.BattleRecords.Commands.CreateBattleRecord;
-using Pricord.Application.BattleRecords.Contracts;
+using Pricord.Application.BattleRecords.Models;
+using Pricord.Contracts.BattleRecords;
 
 namespace Pricord.Api.BattleRecords.Mappers;
 
@@ -10,11 +10,11 @@ internal static class BattleRecordMapper
     public static CreateBattleRecordCommand ToCommand(this CreateBattleRecordRequest request)
     {
         return new CreateBattleRecordCommand(
-            request.Boss,
-            request.PlayableCharacters.ToArray(),
+            request.Boss.ToEntity(),
+            request.PlayableCharacters.Select(pc => pc.ToEntity()).ToArray(),
             request.ExpectedDamage,
             request.BattleType,
-            request.Timeline);
+            request.Timeline?.ToModel());
     }
 
     public static BattleRecordResponse ToResponse(this BattleRecordResult record)

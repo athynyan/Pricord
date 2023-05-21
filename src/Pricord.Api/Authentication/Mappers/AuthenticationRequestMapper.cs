@@ -1,6 +1,6 @@
-using Pricord.Api.Authentication.Contracts;
 using Pricord.Application.Authentication.Commands.Register;
 using Pricord.Application.Authentication.Queries.Login;
+using Pricord.Contracts.Authentication;
 using Pricord.Domain.Authentication.Enums;
 using Pricord.Domain.Authentication.ValueObjects;
 using Pricord.Domain.Common.ValueObjects;
