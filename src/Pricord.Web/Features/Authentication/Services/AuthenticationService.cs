@@ -1,6 +1,8 @@
 using System.Net;
+using System.Net.Http.Json;
+using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Pricord.Contracts.Authentication;
 using Pricord.Contracts.Common.Constants;
 
@@ -9,17 +11,17 @@ namespace Pricord.Web.Features.Authentication.Services;
 public sealed class AuthenticationService : IAuthenticationService
 {
     private readonly HttpClient _httpClient;
-    private readonly ProtectedLocalStorage _localStorage;
-    private readonly ProtectedSessionStorage _sessionStorage;
+    private readonly ILocalStorageService _localStorage;
+    private readonly ISessionStorageService _sessionStorage;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
     public AuthenticationService(
-        IHttpClientFactory httpClientFactory,
-        ProtectedLocalStorage localStorageService,
-        ProtectedSessionStorage sessionStorageService,
+        HttpClient httpClient,
+        ILocalStorageService localStorageService,
+        ISessionStorageService sessionStorageService,
         AuthenticationStateProvider authenticationStateProvider)
     {
-        _httpClient = httpClientFactory.CreateClient("Pricord.Api");
+        _httpClient = httpClient;
         _localStorage = localStorageService;
         _sessionStorage = sessionStorageService;
         _authenticationStateProvider = authenticationStateProvider;
@@ -61,10 +63,10 @@ public sealed class AuthenticationService : IAuthenticationService
 
     public async Task LogoutAsync()
     {
-        await Task.WhenAll(
-            _localStorage.DeleteAsync("refresh_token").AsTask(),
-            _sessionStorage.DeleteAsync("access_token").AsTask(),
-            _sessionStorage.DeleteAsync("user").AsTask());
+        await _localStorage.ClearAsync();
+
+        ((JwtAuthenticationStateProvider)_authenticationStateProvider)
+            .NotifyUserLogout();
     }
 
     public async Task<bool> RegisterAsync(string username, string password, string ConfirmPassword, string? email)
@@ -89,18 +91,18 @@ public sealed class AuthenticationService : IAuthenticationService
     {
         Console.WriteLine("Trying to authenticate with refresh token");
 
-        var refreshToken = await _localStorage.GetAsync<string>("refresh_token");
-        if (refreshToken.Value is null)
+        var refreshToken = await _localStorage.GetItemAsync<string>("refresh_token");
+        if (refreshToken is null)
             return;
 
-        await AuthenticateWithRefreshToken(refreshToken.Value);
+        await AuthenticateWithRefreshToken(refreshToken);
     }
 
     private async Task SaveAuthenticationResult(AuthenticationResponse? authenticationResult)
     {
         await Task.WhenAll(
-            _localStorage.SetAsync("refresh_token", authenticationResult!.RefreshToken).AsTask(),
-            _sessionStorage.SetAsync("access_token", authenticationResult!.AccessToken).AsTask(),
-            _sessionStorage.SetAsync("user", authenticationResult!.User).AsTask());
+            _localStorage.SetItemAsync("refresh_token", authenticationResult!.RefreshToken).AsTask(),
+            _sessionStorage.SetItemAsync("access_token", authenticationResult!.AccessToken).AsTask(),
+            _sessionStorage.SetItemAsync("user", authenticationResult!.User).AsTask());
     }
 }

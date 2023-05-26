@@ -3,10 +3,6 @@
 @using Pricord.Web.Features.Authentication.Services
 @inject IAuthenticationService AuthenticationService
 
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
-<PageTitle>Pricord</PageTitle>
-
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -38,14 +34,7 @@
     </main>
 </div>
 
-<style scoped>
-    .logout {
-        cursor: pointer;
-    }
-</style>
-
 @code {
-
     protected override async Task OnInitializedAsync()
     {
         await AuthenticationService.TryAuthenticateWithRefreshTokenAsync();
@@ -54,7 +43,5 @@
     private async Task LogoutAsync()
     {
         await AuthenticationService.LogoutAsync();
-        ((JwtAuthenticationStateProvider)AuthenticationStateProvider).NotifyUserLogout();
     }
 }
-

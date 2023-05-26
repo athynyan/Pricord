@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using Pricord.Contracts.BattleRecords;
 using Pricord.Contracts.Common.Constants;
 
@@ -7,9 +8,9 @@ public sealed class BattleRecordService : IBattleRecordService
 {
     private readonly HttpClient _httpClient;
 
-    public BattleRecordService(IHttpClientFactory httpClientFactory)
+    public BattleRecordService(HttpClient httpClient)
     {
-        _httpClient = httpClientFactory.CreateClient("Pricord.Api");
+        _httpClient = httpClient;
     }
 
     public async Task<IEnumerable<BattleRecordResponse>> GetAllAsync()

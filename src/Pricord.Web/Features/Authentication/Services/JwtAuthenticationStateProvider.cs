@@ -1,18 +1,16 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Pricord.Web.Features.Authentication.Services;
 
 public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 {
-    private readonly ProtectedSessionStorage _sessionStorage;
+    private readonly ISessionStorageService _sessionStorage;
     private readonly ClaimsPrincipal _anonymous;
 
-    public JwtAuthenticationStateProvider(
-        ProtectedSessionStorage sessionStorage,
-        ProtectedLocalStorage localStorage)
+    public JwtAuthenticationStateProvider(ISessionStorageService sessionStorage)
     {
         _sessionStorage = sessionStorage;
         _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
@@ -20,15 +18,15 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
 
     public async override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var accessToken = await _sessionStorage.GetAsync<string>("access_token");
+        var accessToken = await _sessionStorage.GetItemAsync<string>("access_token");
 
-        if (string.IsNullOrWhiteSpace(accessToken.Value))
+        if (string.IsNullOrWhiteSpace(accessToken))
         {
             return new AuthenticationState(_anonymous);
         }
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(
-            ParseClaimsFromJwt(accessToken.Value),
+            ParseClaimsFromJwt(accessToken),
             "jwt",
             ClaimTypes.Name,
             ClaimTypes.Role));

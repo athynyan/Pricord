@@ -33,7 +33,7 @@
                     <td>
                         @foreach (var playableCharacterId in battleRecord.PlayableCharacterIds)
                         {
-                            @playableCharacterId <br />
+                            @playableCharacterId<br />
                         }
                     </td>
                 </tr>
@@ -53,6 +53,7 @@ else
 @code {
     private IEnumerable<BattleRecordResponse> _battleRecords { get; set; } = new List<BattleRecordResponse>();
     private bool isLoading { get; set; } = false;
+
     protected override async Task OnInitializedAsync()
     {
         isLoading = true;
