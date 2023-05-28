@@ -4,7 +4,7 @@ Pricord is a full stack web application used to record team compositions for the
 
 The application is built using the following technologies:
 - ASP.NET 7.0
-- Blazor Server
+- Blazor WebAssembly
 - Entity Framework Core
 - PostgreSQL
 
