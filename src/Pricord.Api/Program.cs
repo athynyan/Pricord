@@ -36,7 +36,7 @@ var app = builder.Build();
             .AllowAnyMethod()
             .AllowCredentials());
 
-    app.UseMiddleware<ExceptionMiddleware>();
+    // app.UseMiddleware<ExceptionMiddleware>();
 
     // app.UseHttpsRedirection();
 

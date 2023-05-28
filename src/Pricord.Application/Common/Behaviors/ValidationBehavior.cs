@@ -1,11 +1,13 @@
+using System.Reflection;
 using FluentValidation;
 using MediatR;
+using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Common.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : notnull
+    where TResponse : Result
 {
     private readonly IValidator<TRequest>? _validator;
 
@@ -28,7 +30,10 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            var resultType = typeof(TResponse);
+            var failMethod = resultType.GetMethod("Failure", BindingFlags.Public | BindingFlags.Static);
+            var result = (TResponse)failMethod?.Invoke(null, new object[] { new ValidationException(validationResult.Errors) })!;
+            return result;
         }
 
         return await next();

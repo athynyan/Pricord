@@ -6,10 +6,11 @@ using Pricord.Application.Authentication.Persistence;
 using Pricord.Application.Common.Persistence;
 using Pricord.Application.Common.Services;
 using Pricord.Application.Common.Settings;
+using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Authentication.Queries.Refresh;
 
-internal sealed class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQuery, AuthenticationResult>
+internal sealed class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQuery, Result<AuthenticationResult>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IJwtService _jwtService;
@@ -31,12 +32,12 @@ internal sealed class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQue
         _jwtSettings = jwtSettings.Value;
     }
 
-    public async Task<AuthenticationResult> Handle(RefreshTokenQuery request, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> Handle(RefreshTokenQuery request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.FindByRefreshToken(request.RefreshToken);
 
         if (user is null)
-            throw new InvalidCredentialsException("Invalid refresh token");
+            return new InvalidCredentialsException("Invalid refresh token");
 
         var accessToken = _jwtService.GenerateAccessToken(user);
 
