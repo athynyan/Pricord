@@ -25,6 +25,7 @@ var app = builder.Build();
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
+        app.UseWebAssemblyDebugging();
         app.UseSwagger();
         app.UseSwaggerUI();
     }
@@ -39,9 +40,13 @@ var app = builder.Build();
 
     // app.UseHttpsRedirection();
 
+    app.UseStaticFiles();
+
     app.UseAuthentication();
     app.UseAuthorization();
 
+    app.UseBlazorFrameworkFiles();
+    app.MapFallbackToFile("index.html");
     app.MapControllers();
 }
 
