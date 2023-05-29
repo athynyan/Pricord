@@ -6,10 +6,11 @@ using Pricord.Application.Common.Persistence;
 using Pricord.Application.Common.Services;
 using Pricord.Domain.Authentication;
 using Pricord.Domain.Authentication.Enums;
+using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Authentication.Commands.Register;
 
-public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthenticationResult>
+public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<AuthenticationResult>>
 {
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUserRepository _userRepository;
@@ -28,13 +29,13 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Au
         _jwtService = jwtService;
     }
 
-    public async Task<AuthenticationResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var existingUser = await _userRepository.FindByNameAsync(request.Name);
 
         if (existingUser is not null)
         {
-            throw new ExistingUserException();
+            return new UserExistError();
         }
 
         var hashedPassword = _passwordHasher.HashPassword(request.Password);

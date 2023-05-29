@@ -33,7 +33,9 @@ public sealed class BattleRecordsController : ControllerBase
     public async Task<IActionResult> Get(Guid id)
     {
         var result = await _sender.Send(new GetBattleRecordDetailsQuery(BattleRecordId.Create(id)));
-        return Ok(result.ToResponse());
+        return result.Match<IActionResult>(
+            success => Ok(success.ToResponse()),
+            error => Problem(title: error.Title, detail: error.Message));
     }
 
     [HttpGet]

@@ -8,10 +8,11 @@ using Pricord.Application.Common.Services;
 using Pricord.Domain.Authentication;
 using Pricord.Domain.Authentication.ValueObjects;
 using Pricord.Domain.Common.ValueObjects;
+using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Authentication.Queries.Login;
 
-internal sealed partial class LoginQueryHandler : IRequestHandler<LoginQuery, AuthenticationResult>
+internal sealed partial class LoginQueryHandler : IRequestHandler<LoginQuery, Result<AuthenticationResult>>
 {
     private readonly IJwtService _jwtService;
     private readonly IPasswordHasher _passwordHasher;
@@ -26,7 +27,7 @@ internal sealed partial class LoginQueryHandler : IRequestHandler<LoginQuery, Au
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<AuthenticationResult> Handle(LoginQuery request, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         User? existingUser = null;
 
@@ -41,12 +42,12 @@ internal sealed partial class LoginQueryHandler : IRequestHandler<LoginQuery, Au
 
         if (existingUser is null)
         {
-            throw new InvalidCredentialsException();
+            return new InvalidCredentialsError();
         }
 
         if (!_passwordHasher.VerifyPassword(request.Password, existingUser.Password))
         {
-            throw new InvalidCredentialsException();
+            return new InvalidCredentialsError();
         }
 
         var accessToken = _jwtService.GenerateAccessToken(existingUser);
