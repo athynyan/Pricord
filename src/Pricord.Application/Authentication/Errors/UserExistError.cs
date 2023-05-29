@@ -1,10 +1,9 @@
 using System.Net;
-using Pricord.Application.Common.Errors;
 using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Authentication.Exceptions;
 
-public sealed record UserExistError : Error, IResponseError
+public sealed record UserExistError : Error
 {
     public HttpStatusCode StatusCode => HttpStatusCode.Conflict;
 

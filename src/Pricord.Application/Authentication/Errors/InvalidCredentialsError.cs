@@ -1,10 +1,9 @@
 using System.Net;
-using Pricord.Application.Common.Errors;
 using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Authentication.Exceptions;
 
-public sealed record InvalidCredentialsError : Error, IResponseError
+public sealed record InvalidCredentialsError : Error
 {
     public HttpStatusCode StatusCode => HttpStatusCode.Unauthorized;
 

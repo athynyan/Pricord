@@ -3,7 +3,7 @@ using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Common.Errors;
 
-public sealed record NotFoundError : Error, IResponseError
+public sealed record NotFoundError : Error
 {
     public HttpStatusCode StatusCode => HttpStatusCode.NotFound;
 

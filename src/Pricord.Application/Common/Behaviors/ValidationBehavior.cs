@@ -1,13 +1,12 @@
 using System.Reflection;
 using FluentValidation;
 using MediatR;
-using Pricord.Domain.Common.Models;
 
 namespace Pricord.Application.Common.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
-    where TResponse : Result
+    where TResponse : notnull
 {
     private readonly IValidator<TRequest>? _validator;
 

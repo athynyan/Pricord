@@ -33,9 +33,7 @@ public sealed class AuthenticationController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var result = await _sender.Send(request.ToQuery());
-        return result.Match<IActionResult>(
-            success => Ok(success.ToResponse()),
-            error => FormatErrors(error));
+        return FormatResult(result);
     }
 
     [HttpPost(AuthenticationEndpoints.RefreshEndpoint)]
@@ -49,20 +47,13 @@ public sealed class AuthenticationController : ControllerBase
     {
         return result.Match<IActionResult>(
             success => Ok(success),
-            error => FormatErrors(error));
+            error => ValidationProblem(FormatErrors(error)));
     }
 
-    private IActionResult FormatErrors(Exception exception)
+    private ModelStateDictionary FormatErrors(Error error)
     {
-        var validationException = (ValidationException) exception;
-
-        var errors = new ModelStateDictionary();
-
-        foreach(var error in validationException.Errors)
-        {
-            errors.AddModelError(error.PropertyName, error.ErrorMessage);
-        }
-
-        return ValidationProblem(errors);
+        var modelState = new ModelStateDictionary();
+        modelState.AddModelError(error.Title, error.Message);
+        return modelState;
     }
 }
