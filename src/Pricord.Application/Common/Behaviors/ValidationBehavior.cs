@@ -1,3 +1,4 @@
+using System.Reflection;
 using FluentValidation;
 using MediatR;
 
@@ -28,7 +29,10 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            var resultType = typeof(TResponse);
+            var failMethod = resultType.GetMethod("Failure", BindingFlags.Public | BindingFlags.Static);
+            var result = (TResponse)failMethod?.Invoke(null, new object[] { new ValidationException(validationResult.Errors) })!;
+            return result;
         }
 
         return await next();
