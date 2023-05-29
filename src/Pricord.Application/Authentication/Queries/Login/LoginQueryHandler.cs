@@ -42,12 +42,12 @@ internal sealed partial class LoginQueryHandler : IRequestHandler<LoginQuery, Re
 
         if (existingUser is null)
         {
-            return new InvalidCredentialsException();
+            return new InvalidCredentialsError();
         }
 
         if (!_passwordHasher.VerifyPassword(request.Password, existingUser.Password))
         {
-            return new InvalidCredentialsException();
+            return new InvalidCredentialsError();
         }
 
         var accessToken = _jwtService.GenerateAccessToken(existingUser);

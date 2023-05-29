@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Pricord.Api.Authentication.Mappers;
 using Pricord.Application.Authentication.Models;
 using Pricord.Application.Authentication.Queries.Refresh;
+using Pricord.Application.Common.Errors;
 using Pricord.Contracts.Authentication;
 using Pricord.Contracts.Common.Constants;
 using Pricord.Domain.Common.Models;
@@ -32,7 +33,9 @@ public sealed class AuthenticationController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var result = await _sender.Send(request.ToQuery());
-        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error);
+        return result.Match<IActionResult>(
+            success => Ok(success.ToResponse()),
+            error => FormatErrors(error));
     }
 
     [HttpPost(AuthenticationEndpoints.RefreshEndpoint)]
