@@ -37,7 +37,7 @@ internal sealed class RefreshTokenQueryHandler : IRequestHandler<RefreshTokenQue
         var user = await _userRepository.FindByRefreshToken(request.RefreshToken);
 
         if (user is null)
-            return new InvalidCredentialsException("Invalid refresh token");
+            return new InvalidCredentialsError("Invalid refresh token");
 
         var accessToken = _jwtService.GenerateAccessToken(user);
 

@@ -1,50 +1,30 @@
 namespace Pricord.Domain.Common.Models;
 
-public class Result<T> : Result
+public class Result<T>
 {
     public T? Value { get; }
+    public Error? Error { get; }
+    public bool IsSuccess { get; } = false;
 
-    private Result(T value) : base()
+    private Result(T value)
     {
         Value = value;
+        IsSuccess = true;
     }
 
-    private Result(Exception error) : base(error)
+    private Result(Error error)
     {
-        Value = default;
+        Error = error;
     }
 
-    public static Result<T> Success(T value) => new(value);
-    public static new Result<T> Failure(Exception error) => new(error);
-    public TReturn Match<TReturn>(Func<T, TReturn> onSuccess, Func<Exception, TReturn> onFailure)
+    public TReturn Match<TReturn>(Func<T, TReturn> onSuccess, Func<Error, TReturn> onFailure)
     {
         return IsSuccess ? onSuccess(Value!) : onFailure(Error!);
     }
 
+    public static Result<T> Success(T value) => new(value);
+    public static Result<T> Failure(Error error) => new(error);
+
     public static implicit operator Result<T>(T value) => Success(value);
-    public static implicit operator Result<T>(Exception error) => Failure(error);
-}
-
-public class Result
-{
-    public bool IsSuccess { get; }
-    public bool IsFailure => !IsSuccess;
-    public Exception? Error { get; }
-
-    protected Result(Exception error)
-    {
-        IsSuccess = false;
-        Error = error;
-    }
-
-    protected Result()
-    {
-        IsSuccess = true;
-        Error = default;
-    }
-
-    public static Result Success() => new();
-    public static Result Failure(Exception error) => new(error);
-
-    public static implicit operator Result(Exception error) => Result<object>.Failure(error);
+    public static implicit operator Result<T>(Error error) => Failure(error);
 }

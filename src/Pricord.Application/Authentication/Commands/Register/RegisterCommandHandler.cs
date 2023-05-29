@@ -36,7 +36,7 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
 
         if (existingUser is not null)
         {
-            return new ExistingUserException();
+            return new UserExistError();
         }
 
         var hashedPassword = _passwordHasher.HashPassword(request.Password);
