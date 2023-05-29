@@ -47,13 +47,21 @@ public sealed class AuthenticationController : ControllerBase
     {
         return result.Match<IActionResult>(
             success => Ok(success),
-            error => ValidationProblem(FormatErrors(error)));
+            error => FormatErrors(error));
     }
 
-    private ModelStateDictionary FormatErrors(Error error)
+    private IActionResult FormatErrors(Error error)
     {
-        var modelState = new ModelStateDictionary();
-        modelState.AddModelError(error.Title, error.Message);
-        return modelState;
+        if (error is ValidationError validationError)
+        {
+            var modelState = validationError.Errors.Aggregate(new ModelStateDictionary(), (dictionary, error) => {
+                dictionary.AddModelError(error.Key, error.Value);
+                return dictionary;
+            });
+
+            return ValidationProblem(modelState);
+        }
+
+        return Problem(statusCode: (int)((IResponseError)error).StatusCode, title: error.Title, detail: error.Message);
     }
 }
